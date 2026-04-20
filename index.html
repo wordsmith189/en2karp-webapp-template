@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#1c1b1f">
+    <title>Notes</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #fafaf7;
+            --fg: #1c1b1f;
+            --muted: #5f5e63;
+            --accent: #3a6ea5;
+            --card: #ffffff;
+            --border: #e3e2de;
+            --chip-bg: #eceae4;
+            --chip-fg: #3a6ea5;
+            --badge-raw: #8a8a8e;
+            --badge-extracted: #b88a2a;
+            --badge-synthesized: #2a8a4a;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #17171a;
+                --fg: #e8e6e0;
+                --muted: #9a9894;
+                --accent: #7fb3e6;
+                --card: #212126;
+                --border: #2f2f35;
+                --chip-bg: #2a2a31;
+                --chip-fg: #7fb3e6;
+                --badge-raw: #74747a;
+                --badge-extracted: #d4a655;
+                --badge-synthesized: #5dbf85;
+            }
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0; padding: 0;
+            background: var(--bg); color: var(--fg);
+            font: 16px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+        }
+        header {
+            position: sticky; top: 0; z-index: 10;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: max(env(safe-area-inset-top), 12px) 16px 12px;
+        }
+        h1 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 600; letter-spacing: .01em; }
+        .search {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .search input {
+            flex: 1; min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid var(--border); border-radius: 10px;
+            background: var(--card); color: var(--fg);
+            font-size: 16px;
+        }
+        .search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+        .controls {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .controls select {
+            padding: 7px 10px;
+            border: 1px solid var(--border); border-radius: 8px;
+            background: var(--card); color: var(--fg);
+            font-size: 14px; min-width: 0;
+        }
+        .controls select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+        .status-row {
+            display: flex; gap: 10px; flex-wrap: wrap;
+            margin-top: 8px;
+            font-size: .82rem; color: var(--muted);
+        }
+        .status-row label { cursor: pointer; user-select: none; }
+        .status-row input { vertical-align: middle; margin-right: 3px; }
+        .meta {
+            color: var(--muted); font-size: .8rem; margin-top: 8px;
+        }
+        .filters {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            padding: 10px 16px 4px;
+        }
+        .chip {
+            padding: 5px 10px;
+            background: var(--chip-bg); color: var(--chip-fg);
+            border-radius: 999px; font-size: .78rem;
+            border: 1px solid transparent;
+            cursor: pointer; user-select: none;
+        }
+        .chip.active { background: var(--accent); color: white; }
+        main {
+            padding: 8px 16px max(env(safe-area-inset-bottom), 16px);
+            max-width: 880px; margin: 0 auto;
+        }
+        details.card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        details.card summary {
+            list-style: none;
+            padding: 14px 16px;
+            cursor: pointer;
+        }
+        details.card summary::-webkit-details-marker { display: none; }
+        details.card summary h2 {
+            margin: 0 0 4px; font-size: 1rem; font-weight: 600;
+        }
+        details.card .path {
+            color: var(--muted); font-size: .78rem;
+            font-family: "SF Mono", ui-monospace, Menlo, monospace;
+            overflow-wrap: anywhere;
+        }
+        details.card .wc { color: var(--muted); font-size: .75rem; margin-top: 4px; }
+        details.card .body {
+            padding: 0 16px 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+            padding-top: 12px;
+        }
+        details.card .body .row {
+            font-size: .78rem; color: var(--muted); margin: 4px 0;
+        }
+        details.card .body .row strong { color: var(--fg); font-weight: 500; }
+        details.card .body .nid {
+            font-family: "SF Mono", ui-monospace, Menlo, monospace;
+            user-select: all;
+            font-size: .72rem;
+        }
+        details.card .body a { color: var(--accent); }
+        .tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+        .tag {
+            font-size: .7rem; padding: 2px 7px;
+            background: var(--chip-bg); color: var(--chip-fg);
+            border-radius: 4px; cursor: pointer; user-select: none;
+        }
+        .tag.active { background: var(--accent); color: white; }
+        .badge {
+            display: inline-block; font-size: .68rem;
+            padding: 1px 7px; border-radius: 4px;
+            color: white; text-transform: uppercase; letter-spacing: .03em;
+            margin-left: 6px; vertical-align: middle;
+        }
+        .badge.raw { background: var(--badge-raw); }
+        .badge.extracted { background: var(--badge-extracted); }
+        .badge.synthesized { background: var(--badge-synthesized); }
+        .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+        .load-more {
+            display: block; width: 100%;
+            padding: 12px; margin: 8px 0 16px;
+            background: var(--card); color: var(--accent);
+            border: 1px solid var(--border); border-radius: 10px;
+            font-size: .9rem; font-weight: 500;
+            cursor: pointer;
+        }
+        .load-more:hover { background: var(--chip-bg); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Notes</h1>
+        <div class="search">
+            <input id="q" type="search" placeholder="Search titles, folders, tags…" autocomplete="off">
+        </div>
+        <div class="controls">
+            <select id="folder" aria-label="Filter by folder">
+                <option value="">All folders</option>
+            </select>
+            <select id="sort" aria-label="Sort order">
+                <option value="modified">Modified ↓</option>
+                <option value="created">Created ↓</option>
+                <option value="words">Word count ↓</option>
+                <option value="title">Title A–Z</option>
+            </select>
+        </div>
+        <div class="status-row" id="statusRow">
+            <label><input type="radio" name="status" value="" checked>All</label>
+            <label><input type="radio" name="status" value="raw">Raw</label>
+            <label><input type="radio" name="status" value="extracted">Extracted</label>
+            <label><input type="radio" name="status" value="synthesized">Synthesized</label>
+        </div>
+        <div class="meta" id="meta">Loading…</div>
+    </header>
+    <div class="filters" id="tagFilters"></div>
+    <main id="list"></main>
+
+    <script>
+        const state = {
+            notes: [],
+            meta: null,
+            q: "",
+            activeTags: new Set(),
+            folder: "",
+            status: "",
+            sort: "modified",
+            limit: 50,
+        };
+        const PAGE = 50;
+
+        async function boot() {
+            try {
+                const [notes, meta] = await Promise.all([
+                    fetch("catalog.json").then(r => r.json()),
+                    fetch("metadata.json").then(r => r.json()),
+                ]);
+                state.notes = notes;
+                state.meta = meta;
+                populateFolders();
+                renderTags();
+                wireControls();
+                render();
+            } catch (e) {
+                document.getElementById("meta").textContent = "Could not load catalog.json / metadata.json.";
+            }
+        }
+
+        function populateFolders() {
+            const sel = document.getElementById("folder");
+            const folders = state.meta.folders || [];
+            for (const f of folders) {
+                const opt = document.createElement("option");
+                opt.value = f;
+                opt.textContent = f;
+                sel.appendChild(opt);
+            }
+        }
+
+        function renderTags() {
+            const host = document.getElementById("tagFilters");
+            host.replaceChildren();
+            const top = (state.meta.tags || []).slice(0, 30);
+            for (const t of top) {
+                const el = document.createElement("span");
+                el.className = "chip";
+                el.dataset.tag = t.tag;
+                el.textContent = `${t.tag} (${t.count})`;
+                el.onclick = () => toggleTag(t.tag);
+                if (state.activeTags.has(t.tag)) el.classList.add("active");
+                host.appendChild(el);
+            }
+        }
+
+        function toggleTag(tag) {
+            if (state.activeTags.has(tag)) state.activeTags.delete(tag);
+            else state.activeTags.add(tag);
+            for (const el of document.querySelectorAll("#tagFilters .chip")) {
+                el.classList.toggle("active", state.activeTags.has(el.dataset.tag));
+            }
+            resetPaging();
+            render();
+        }
+
+        function resetPaging() { state.limit = PAGE; }
+
+        function wireControls() {
+            let qTimer;
+            document.getElementById("q").addEventListener("input", e => {
+                clearTimeout(qTimer);
+                const v = e.target.value;
+                qTimer = setTimeout(() => {
+                    state.q = v;
+                    resetPaging();
+                    render();
+                }, 150);
+            });
+            document.getElementById("folder").addEventListener("change", e => {
+                state.folder = e.target.value;
+                resetPaging();
+                render();
+            });
+            document.getElementById("sort").addEventListener("change", e => {
+                state.sort = e.target.value;
+                resetPaging();
+                render();
+            });
+            document.getElementById("statusRow").addEventListener("change", e => {
+                if (e.target.name !== "status") return;
+                state.status = e.target.value;
+                resetPaging();
+                render();
+            });
+        }
+
+        function applyFilters() {
+            const q = state.q.trim().toLowerCase();
+            return state.notes.filter(n => {
+                if (state.activeTags.size) {
+                    const tags = n.tags || [];
+                    for (const t of state.activeTags) if (!tags.includes(t)) return false;
+                }
+                if (state.folder && n.folder !== state.folder) return false;
+                if (state.status && n.wiki_status !== state.status) return false;
+                if (!q) return true;
+                const hay = [n.title, n.folder, (n.tags || []).join(" ")].join(" ").toLowerCase();
+                return hay.includes(q);
+            });
+        }
+
+        function applySort(arr) {
+            const key = state.sort;
+            const cmp = {
+                modified: (a, b) => (b.modified_date || "").localeCompare(a.modified_date || ""),
+                created:  (a, b) => (b.created_date  || "").localeCompare(a.created_date  || ""),
+                words:    (a, b) => (b.word_count    || 0)  -  (a.word_count    || 0),
+                title:    (a, b) => (a.title || "").localeCompare(b.title || "", undefined, { sensitivity: "base" }),
+            }[key];
+            return arr.slice().sort(cmp);
+        }
+
+        function fmtDate(s) {
+            if (!s) return "";
+            const d = new Date(s);
+            return !isNaN(+d) && d.getFullYear() > 2000 ? d.toLocaleDateString() : "";
+        }
+
+        function buildCard(n) {
+            const card = document.createElement("details");
+            card.className = "card";
+
+            const summary = document.createElement("summary");
+            const h2 = document.createElement("h2");
+            h2.textContent = n.title || "(untitled)";
+            const status = (n.wiki_status || "raw");
+            const badge = document.createElement("span");
+            badge.className = `badge ${status}`;
+            badge.textContent = status;
+            h2.appendChild(badge);
+            summary.appendChild(h2);
+
+            const path = document.createElement("div");
+            path.className = "path";
+            path.textContent = n.folder || "";
+            summary.appendChild(path);
+
+            const wc = document.createElement("div");
+            wc.className = "wc";
+            const dateStr = fmtDate(n.modified_date);
+            wc.textContent = `${n.word_count || 0} words${dateStr ? " · " + dateStr : ""}`;
+            summary.appendChild(wc);
+
+            card.appendChild(summary);
+
+            const body = document.createElement("div");
+            body.className = "body";
+
+            if ((n.tags || []).length) {
+                const tags = document.createElement("div");
+                tags.className = "tags";
+                for (const t of n.tags) {
+                    const s = document.createElement("span");
+                    s.className = "tag";
+                    if (state.activeTags.has(t)) s.classList.add("active");
+                    s.textContent = t;
+                    s.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); toggleTag(t); };
+                    tags.appendChild(s);
+                }
+                body.appendChild(tags);
+            }
+
+            const created = fmtDate(n.created_date);
+            if (created) {
+                const r = document.createElement("div");
+                r.className = "row";
+                r.innerHTML = `<strong>Created:</strong> `;
+                r.appendChild(document.createTextNode(created));
+                body.appendChild(r);
+            }
+
+            if (n.image_count) {
+                const r = document.createElement("div");
+                r.className = "row";
+                r.innerHTML = `<strong>Images:</strong> `;
+                r.appendChild(document.createTextNode(`${n.image_count}${n.has_ocr ? " (OCR available)" : ""}`));
+                body.appendChild(r);
+            }
+
+            if (n.source_url) {
+                const r = document.createElement("div");
+                r.className = "row";
+                r.innerHTML = `<strong>Source:</strong> `;
+                const a = document.createElement("a");
+                a.href = n.source_url;
+                a.target = "_blank";
+                a.rel = "noopener";
+                a.textContent = n.source_url;
+                r.appendChild(a);
+                body.appendChild(r);
+            }
+
+            if (n.note_id) {
+                const r = document.createElement("div");
+                r.className = "row";
+                r.innerHTML = `<strong>note_id:</strong> `;
+                const span = document.createElement("span");
+                span.className = "nid";
+                span.textContent = n.note_id;
+                r.appendChild(span);
+                body.appendChild(r);
+            }
+
+            card.appendChild(body);
+            return card;
+        }
+
+        function render() {
+            const filtered = applySort(applyFilters());
+            const list = document.getElementById("list");
+            renderMeta(filtered.length);
+
+            if (!filtered.length) {
+                const d = document.createElement("div");
+                d.className = "empty";
+                d.textContent = "No matching notes.";
+                list.replaceChildren(d);
+                return;
+            }
+
+            const slice = filtered.slice(0, state.limit);
+            const frag = document.createDocumentFragment();
+            for (const n of slice) frag.appendChild(buildCard(n));
+
+            if (filtered.length > state.limit) {
+                const btn = document.createElement("button");
+                btn.className = "load-more";
+                const remaining = filtered.length - state.limit;
+                btn.textContent = `Load more (${Math.min(PAGE, remaining)} of ${remaining} remaining)`;
+                btn.onclick = () => { state.limit += PAGE; render(); };
+                frag.appendChild(btn);
+            }
+
+            list.replaceChildren(frag);
+        }
+
+        function renderMeta(showing) {
+            const m = state.meta;
+            const dateStr = fmtDate(m.generated_at);
+            const total = m.total_notes ?? state.notes.length;
+            const folders = (m.folders || []).length;
+            const tags = (m.tags || []).length;
+            const showingStr = showing != null ? ` · showing ${showing.toLocaleString()} of ${total.toLocaleString()}` : "";
+            document.getElementById("meta").textContent =
+                `${total.toLocaleString()} notes · ${folders} folders · ${tags} tags${dateStr ? " · " + dateStr : ""}${showingStr}`;
+        }
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {});
+            });
+        }
+
+        boot();
+    </script>
+</body>
+</html>
