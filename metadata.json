@@ -1,6 +1,30 @@
 {
-    "generated_at": "1970-01-01T00:00:00+00:00",
-    "total_notes": 0,
-    "folders": [],
-    "tags": []
+    "generated_at": "2026-04-20T12:00:00+00:00",
+    "total_notes": 12,
+    "folders": ["Books", "Ideas", "Projects", "Reading"],
+    "tags": [
+        {"tag": "wiki", "count": 4},
+        {"tag": "llm", "count": 3},
+        {"tag": "local", "count": 3},
+        {"tag": "workflow", "count": 2},
+        {"tag": "project", "count": 2},
+        {"tag": "zettelkasten", "count": 2},
+        {"tag": "borges", "count": 1},
+        {"tag": "capture", "count": 1},
+        {"tag": "en2karp", "count": 1},
+        {"tag": "hardware", "count": 1},
+        {"tag": "karpathy", "count": 1},
+        {"tag": "literature", "count": 1},
+        {"tag": "mac", "count": 1},
+        {"tag": "memory", "count": 1},
+        {"tag": "mnemonics", "count": 1},
+        {"tag": "mnemovault", "count": 1},
+        {"tag": "mobile", "count": 1},
+        {"tag": "monetization", "count": 1},
+        {"tag": "personal", "count": 1},
+        {"tag": "productivity", "count": 1},
+        {"tag": "rag", "count": 1},
+        {"tag": "setup", "count": 1},
+        {"tag": "tool", "count": 1}
+    ]
 }
