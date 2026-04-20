@@ -1,7 +1,9 @@
+<p align="center"><img src="banner.png" width="620" height="413" alt="en2karp"></p>
+
 # en2karp-webapp-template
 
 Static, installable (PWA) browser for the `catalog.json` + `metadata.json`
-pair produced by the [`en2karp-catalog`](https://github.com/wordsmith189/lars-claude-skills)
+pair produced by the [`en2karp-catalog`](https://github.com/wordsmith189/en2karp-catalog)
 skill. Zero build, zero backend — drop in the two JSON files, open
 `index.html`, optionally add it to your iOS home screen.
 
