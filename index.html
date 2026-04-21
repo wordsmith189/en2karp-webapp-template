@@ -80,8 +80,11 @@
             margin-top: 8px;
             font-size: .82rem; color: var(--muted);
         }
-        .status-row label { cursor: pointer; user-select: none; }
-        .status-row input { vertical-align: middle; margin-right: 3px; }
+        .status-row label {
+            cursor: pointer; user-select: none;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .status-row input { margin: 0; }
         .meta {
             color: var(--muted); font-size: .8rem; margin-top: 8px;
         }
