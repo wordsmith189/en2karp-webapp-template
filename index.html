@@ -385,9 +385,29 @@
             } catch (_) { /* handled above */ }
         }
 
+        function stripLeadingTitle(md, title) {
+            if (!md || !title) return md;
+            const lines = md.split("\n");
+            let i = 0;
+            while (i < lines.length && !lines[i].trim()) i++;
+            if (i >= lines.length) return md;
+            const m = lines[i].match(/^#{1,6}\s+(.*?)\s*#*\s*$/);
+            if (!m) return md;
+            const norm = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
+            const h = norm(m[1]);
+            const t = norm(title);
+            const matches = h === t
+                || h.startsWith(t + " —") || h.startsWith(t + " -") || h.startsWith(t + ":")
+                || t.startsWith(h + " —") || t.startsWith(h + " -") || t.startsWith(h + ":");
+            if (!matches) return md;
+            let j = i + 1;
+            if (j < lines.length && !lines[j].trim()) j++;
+            return lines.slice(j).join("\n");
+        }
+
         function renderBody(data, bodyEl) {
             bodyEl.className = "note-body";
-            const src = data.body_markdown || "";
+            const src = stripLeadingTitle(data.body_markdown || "", data.title);
             if (window.marked) {
                 bodyEl.innerHTML = marked.parse(src, { async: false, mangle: false, headerIds: false });
             } else {
