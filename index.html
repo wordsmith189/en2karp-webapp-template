@@ -7,6 +7,7 @@
     <title>Notes</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <script src="vendor/marked.min.js" defer></script>
     <style>
         :root {
             color-scheme: light dark;
@@ -137,6 +138,58 @@
             font-size: .72rem;
         }
         details.card .body a { color: var(--accent); }
+        .note-body {
+            margin-top: 4px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            font-size: .95rem; line-height: 1.6;
+            overflow-wrap: break-word;
+        }
+        .note-body.loading { color: var(--muted); font-style: italic; }
+        .note-body.error { color: #b94a4a; }
+        .note-body h1, .note-body h2, .note-body h3,
+        .note-body h4, .note-body h5, .note-body h6 {
+            margin: 1em 0 .4em; font-weight: 600; line-height: 1.3;
+        }
+        .note-body h1 { font-size: 1.25rem; }
+        .note-body h2 { font-size: 1.15rem; }
+        .note-body h3 { font-size: 1.05rem; }
+        .note-body h4, .note-body h5, .note-body h6 { font-size: 1rem; }
+        .note-body p { margin: .6em 0; }
+        .note-body ul, .note-body ol { padding-left: 1.4em; margin: .6em 0; }
+        .note-body li { margin: .2em 0; }
+        .note-body pre {
+            background: var(--chip-bg);
+            padding: 10px 12px; border-radius: 8px;
+            overflow-x: auto; font-size: .85em;
+            font-family: "SF Mono", ui-monospace, Menlo, monospace;
+        }
+        .note-body code {
+            background: var(--chip-bg); padding: 1px 5px; border-radius: 4px;
+            font-family: "SF Mono", ui-monospace, Menlo, monospace;
+            font-size: .9em;
+        }
+        .note-body pre code { background: none; padding: 0; }
+        .note-body blockquote {
+            border-left: 3px solid var(--border);
+            margin: .6em 0; padding: .2em 0 .2em 12px;
+            color: var(--muted);
+        }
+        .note-body img {
+            max-width: 100%; height: auto;
+            border-radius: 6px; margin: .4em 0;
+            display: block;
+        }
+        .note-body table {
+            border-collapse: collapse; margin: .6em 0;
+            font-size: .9em;
+        }
+        .note-body th, .note-body td {
+            border: 1px solid var(--border); padding: 4px 8px;
+        }
+        .note-body hr {
+            border: none; border-top: 1px solid var(--border); margin: 1em 0;
+        }
         .tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
         .tag {
             font-size: .7rem; padding: 2px 7px;
@@ -205,6 +258,7 @@
             limit: 50,
         };
         const PAGE = 50;
+        const sidecarCache = new Map();  // note_id -> sidecar JSON (or Promise while loading)
 
         async function boot() {
             try {
@@ -218,8 +272,82 @@
                 renderTags();
                 wireControls();
                 render();
+                handleHash();
+                window.addEventListener("hashchange", handleHash);
             } catch (e) {
                 document.getElementById("meta").textContent = "Could not load catalog.json / metadata.json.";
+            }
+        }
+
+        function parseHash() {
+            const h = (location.hash || "").replace(/^#/, "");
+            if (!h) return null;
+            for (const part of h.split("&")) {
+                const [k, v] = part.split("=");
+                if (k === "note" && v) return decodeURIComponent(v);
+            }
+            return null;
+        }
+
+        function handleHash() {
+            const target = parseHash();
+            if (!target) return;
+            const idx = state.notes.findIndex(n => n.note_id === target);
+            if (idx < 0) return;
+            // Clear filters so the target is visible; keep sort.
+            state.q = ""; state.folder = ""; state.status = "";
+            state.activeTags.clear();
+            document.getElementById("q").value = "";
+            document.getElementById("folder").value = "";
+            for (const el of document.querySelectorAll('input[name="status"]')) el.checked = el.value === "";
+            for (const el of document.querySelectorAll("#tagFilters .chip")) el.classList.remove("active");
+            // Expand pagination enough to include the target under current sort.
+            state.limit = Math.max(PAGE, idx + 1);
+            render();
+            requestAnimationFrame(() => {
+                const card = document.querySelector(`details.card[data-note-id="${cssEscape(target)}"]`);
+                if (!card) return;
+                card.open = true;
+                card.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+
+        function cssEscape(s) {
+            return (window.CSS && CSS.escape) ? CSS.escape(s) : s.replace(/"/g, '\\"');
+        }
+
+        async function loadSidecar(noteId, bodyEl) {
+            if (sidecarCache.has(noteId)) {
+                const cached = await sidecarCache.get(noteId);
+                if (cached) return renderBody(cached, bodyEl);
+            }
+            bodyEl.className = "note-body loading";
+            bodyEl.textContent = "Loading…";
+            const p = fetch(`notes/${encodeURIComponent(noteId)}.json`)
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+                .catch(err => {
+                    bodyEl.className = "note-body error";
+                    bodyEl.textContent = "Could not load note body.";
+                    sidecarCache.delete(noteId);
+                    throw err;
+                });
+            sidecarCache.set(noteId, p);
+            try {
+                const data = await p;
+                sidecarCache.set(noteId, data);
+                renderBody(data, bodyEl);
+            } catch (_) { /* handled above */ }
+        }
+
+        function renderBody(data, bodyEl) {
+            bodyEl.className = "note-body";
+            const src = data.body_markdown || "";
+            if (window.marked) {
+                bodyEl.innerHTML = marked.parse(src, { async: false, mangle: false, headerIds: false });
+            } else {
+                const pre = document.createElement("pre");
+                pre.textContent = src;
+                bodyEl.replaceChildren(pre);
             }
         }
 
@@ -325,6 +453,7 @@
         function buildCard(n) {
             const card = document.createElement("details");
             card.className = "card";
+            card.dataset.noteId = n.note_id || "";
 
             const summary = document.createElement("summary");
             const h2 = document.createElement("h2");
@@ -351,6 +480,18 @@
 
             const body = document.createElement("div");
             body.className = "body";
+
+            const noteBody = document.createElement("div");
+            noteBody.className = "note-body";
+            body.appendChild(noteBody);
+
+            let loaded = false;
+            card.addEventListener("toggle", () => {
+                if (!card.open || loaded) return;
+                loaded = true;
+                if (n.note_id) loadSidecar(n.note_id, noteBody);
+                else { noteBody.className = "note-body error"; noteBody.textContent = "(no note_id)"; }
+            });
 
             if ((n.tags || []).length) {
                 const tags = document.createElement("div");
