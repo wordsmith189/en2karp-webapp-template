@@ -216,6 +216,44 @@
             cursor: pointer;
         }
         .load-more:hover { background: var(--chip-bg); }
+        .export-row {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .export-row button {
+            padding: 6px 12px;
+            border: 1px solid var(--border); border-radius: 8px;
+            background: var(--card); color: var(--fg);
+            font-size: .82rem; cursor: pointer;
+        }
+        .export-row button:hover { background: var(--chip-bg); }
+        .export-row button.active {
+            background: var(--accent); color: white; border-color: var(--accent);
+        }
+        details.card.selectable summary { padding-left: 44px; position: relative; }
+        details.card .select-box {
+            position: absolute; top: 14px; left: 14px;
+            width: 20px; height: 20px; cursor: pointer;
+        }
+        .selection-footer {
+            position: fixed; left: 0; right: 0; bottom: 0;
+            background: var(--card); border-top: 1px solid var(--border);
+            padding: 10px 16px max(env(safe-area-inset-bottom), 10px);
+            display: flex; gap: 10px; align-items: center; justify-content: flex-end;
+            font-size: .9rem;
+            z-index: 20;
+            box-shadow: 0 -2px 10px rgba(0,0,0,.08);
+        }
+        .selection-footer .count { margin-right: auto; color: var(--muted); }
+        .selection-footer button {
+            padding: 7px 14px; border-radius: 8px; font-size: .88rem; cursor: pointer;
+            border: 1px solid var(--border); background: var(--card); color: var(--fg);
+        }
+        .selection-footer button.primary {
+            background: var(--accent); color: white; border-color: var(--accent);
+        }
+        .selection-footer button:disabled { opacity: .5; cursor: not-allowed; }
+        main.has-selection-footer { padding-bottom: 80px; }
     </style>
 </head>
 <body>
@@ -241,6 +279,10 @@
             <label><input type="radio" name="status" value="extracted">Extracted</label>
             <label><input type="radio" name="status" value="synthesized">Synthesized</label>
         </div>
+        <div class="export-row">
+            <button id="exportFilterBtn" title="Download current filter state as JSON for filter_notes.py --from-query">Export filter</button>
+            <button id="selectModeBtn" title="Enter selection mode to cherry-pick notes for filter_notes.py --from-ids">Select notes…</button>
+        </div>
         <div class="meta" id="meta">Loading…</div>
     </header>
     <div class="filters" id="tagFilters"></div>
@@ -256,6 +298,8 @@
             status: "",
             sort: "modified",
             limit: 50,
+            selectionMode: false,
+            selectedIds: new Set(),
         };
         const PAGE = 50;
         const sidecarCache = new Map();  // note_id -> sidecar JSON (or Promise while loading)
@@ -416,6 +460,83 @@
                 resetPaging();
                 render();
             });
+            document.getElementById("exportFilterBtn").addEventListener("click", exportFilter);
+            document.getElementById("selectModeBtn").addEventListener("click", toggleSelectionMode);
+        }
+
+        function buildFilterPayload() {
+            return {
+                schema: "en2karp/webapp-filter/v1",
+                q: state.q,
+                folder: state.folder,
+                tags: [...state.activeTags],
+                status: state.status,
+                exported_at: new Date().toISOString(),
+            };
+        }
+
+        function downloadJSON(payload, filename) {
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportStamp() {
+            const d = new Date();
+            const pad = (n) => String(n).padStart(2, "0");
+            return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+        }
+
+        function exportFilter() {
+            downloadJSON(buildFilterPayload(), `en2karp-filter-${exportStamp()}.json`);
+        }
+
+        function toggleSelectionMode() {
+            state.selectionMode = !state.selectionMode;
+            if (!state.selectionMode) state.selectedIds.clear();
+            document.getElementById("selectModeBtn").classList.toggle("active", state.selectionMode);
+            document.getElementById("selectModeBtn").textContent =
+                state.selectionMode ? "Exit selection" : "Select notes…";
+            render();
+        }
+
+        function exportIds() {
+            if (!state.selectedIds.size) return;
+            downloadJSON({
+                schema: "en2karp/webapp-ids/v1",
+                note_ids: [...state.selectedIds],
+                source_filter: buildFilterPayload(),
+                exported_at: new Date().toISOString(),
+            }, `en2karp-ids-${exportStamp()}.json`);
+        }
+
+        function renderSelectionFooter() {
+            let footer = document.getElementById("selectionFooter");
+            if (!state.selectionMode) {
+                if (footer) footer.remove();
+                document.querySelector("main").classList.remove("has-selection-footer");
+                return;
+            }
+            document.querySelector("main").classList.add("has-selection-footer");
+            if (!footer) {
+                footer = document.createElement("div");
+                footer.id = "selectionFooter";
+                footer.className = "selection-footer";
+                footer.innerHTML = `
+                    <span class="count"></span>
+                    <button id="selCancelBtn">Cancel</button>
+                    <button id="selExportBtn" class="primary">Export IDs</button>
+                `;
+                document.body.appendChild(footer);
+                footer.querySelector("#selCancelBtn").addEventListener("click", toggleSelectionMode);
+                footer.querySelector("#selExportBtn").addEventListener("click", exportIds);
+            }
+            footer.querySelector(".count").textContent = `${state.selectedIds.size} selected`;
+            footer.querySelector("#selExportBtn").disabled = state.selectedIds.size === 0;
         }
 
         function applyFilters() {
@@ -452,10 +573,25 @@
 
         function buildCard(n) {
             const card = document.createElement("details");
-            card.className = "card";
+            card.className = "card" + (state.selectionMode ? " selectable" : "");
             card.dataset.noteId = n.note_id || "";
 
             const summary = document.createElement("summary");
+            if (state.selectionMode && n.note_id) {
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.className = "select-box";
+                cb.checked = state.selectedIds.has(n.note_id);
+                cb.addEventListener("change", () => {
+                    if (cb.checked) state.selectedIds.add(n.note_id);
+                    else state.selectedIds.delete(n.note_id);
+                    renderSelectionFooter();
+                });
+                summary.addEventListener("click", (ev) => {
+                    if (ev.target === cb) ev.preventDefault();
+                });
+                summary.appendChild(cb);
+            }
             const h2 = document.createElement("h2");
             h2.textContent = n.title || "(untitled)";
             const status = (n.wiki_status || "raw");
@@ -562,6 +698,7 @@
                 d.className = "empty";
                 d.textContent = "No matching notes.";
                 list.replaceChildren(d);
+                renderSelectionFooter();
                 return;
             }
 
@@ -579,6 +716,7 @@
             }
 
             list.replaceChildren(frag);
+            renderSelectionFooter();
         }
 
         function renderMeta(showing) {
