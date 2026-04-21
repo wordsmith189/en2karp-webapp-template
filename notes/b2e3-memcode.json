@@ -1,0 +1,13 @@
+{
+  "note_id": "b2e3-memcode",
+  "title": "The Memory Code — rereading",
+  "file_path": "Books/the-memory-code.md",
+  "body_markdown": "## The Memory Code (Lynne Kelly) — rereading\n\nKelly's thesis: oral cultures encoded enormous amounts of knowledge\nthrough memory palaces tied to landscape. *Everything* was a mnemonic\n— songlines, ceremonies, carved posts, dance.\n\nKey takeaways from this pass:\n\n1. The method of loci isn't a trick — it's the default mode of\n   preliterate cognition.\n2. Encoding works best when the memorized material is *performed*,\n   not just recalled silently.\n3. Landscape-based palaces are more durable than constructed ones.\n\nThe application to LLM-backed wikis is obvious: the wiki *is* the\npalace, and the entities are the stations.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "memory",
+    "mnemonics"
+  ],
+  "modified_date": "2026-03-10"
+}

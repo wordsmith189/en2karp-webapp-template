@@ -1,0 +1,14 @@
+{
+  "note_id": "l2g3-mnemovault",
+  "title": "MnemoVault — Ollama-backed local wiki IDE",
+  "file_path": "Reading/mnemovault.md",
+  "body_markdown": "## MnemoVault — Ollama-backed local wiki IDE\n\nWorth watching. Runs the full stack locally — Ollama as backend, a\ndesktop app as the IDE. Zero API cost.\n\nBlockers for me to adopt it directly:\n- Opinionated on wiki shape in ways that don't match my catalog\n- No Evernote ingestion path\n- Mobile story unclear\n\nBut the architecture is instructive — same general idea as en2karp\nPipeline 02, packaged as an app.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "mnemovault",
+    "local",
+    "tool"
+  ],
+  "modified_date": "2026-04-15"
+}

@@ -1,0 +1,14 @@
+{
+  "note_id": "d4c5-wiki-vs-zk",
+  "title": "Wiki vs. Zettelkasten — tradeoffs",
+  "file_path": "Ideas/wiki-vs-zettelkasten.md",
+  "body_markdown": "## Wiki vs. Zettelkasten — tradeoffs\n\nBoth are graph-shaped personal knowledge stores. They differ on:\n\n| Axis | Zettelkasten | Wiki |\n|------|-------------|------|\n| Granularity | One idea per note | One *topic* per page |\n| Linking | Dense, serendipitous | Hierarchical + cross-ref |\n| Maintenance | You | LLM (in the Karpathy model) |\n| Entry cost | High | Medium |\n\n### Where I've landed\nFor a *personal* system I want the wiki shape: topic pages that the\nLLM maintains, with a raw-notes layer underneath. Zettelkasten's\natomicity is beautiful but demands a kind of discipline I don't have\nwhen I'm capturing on my phone in a grocery store.\n\nThe LLM absorbs the discipline gap. That's the whole pitch.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "wiki",
+    "zettelkasten",
+    "personal"
+  ],
+  "modified_date": "2026-04-11"
+}

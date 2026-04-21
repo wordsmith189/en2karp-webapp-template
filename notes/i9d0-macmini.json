@@ -1,0 +1,15 @@
+{
+  "note_id": "i9d0-macmini",
+  "title": "Mac mini M4 Pro — local inference setup",
+  "file_path": "Projects/mac-mini-m4-pro.md",
+  "body_markdown": "## Mac mini M4 Pro — local inference setup\n\n### Why this machine\n64 GB unified RAM fits 70B Q4 models fully in memory. 12 CPU + 16 GPU\ncores handle extraction workloads without fan noise. 2 TB storage\nholds the catalog, vault, wiki outputs, and model weights with room.\n\n### Intended role\nDedicated inference server on the local network. Headless. All three\npipelines dispatch to it for model calls; laptop is just the client.\n\n### Open questions\n- Tailscale vs. local-only — probably local-only\n- Power budget — idle ~5W, active ~60W, fine\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "hardware",
+    "setup",
+    "mac",
+    "local"
+  ],
+  "modified_date": "2026-04-12"
+}

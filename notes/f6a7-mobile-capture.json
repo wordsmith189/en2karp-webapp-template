@@ -1,0 +1,14 @@
+{
+  "note_id": "f6a7-mobile-capture",
+  "title": "Mobile capture problem (post-Evernote)",
+  "file_path": "Ideas/mobile-capture-problem.md",
+  "body_markdown": "## Mobile capture problem (post-Evernote)\n\nThe unsolved piece of any local-first knowledge system. Everything\nelse — search, organize, render, synthesize — has a good answer.\nCapture on a phone, from anywhere, in under five seconds, doesn't.\n\nCurrent fallback: keep Evernote running purely as a capture inbox;\nPipeline 01 picks up new notes on its schedule.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "mobile",
+    "capture",
+    "workflow"
+  ],
+  "modified_date": "2026-04-18"
+}

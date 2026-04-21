@@ -1,0 +1,14 @@
+{
+  "note_id": "g7b8-en2karp-design",
+  "title": "en2karp — design notes",
+  "file_path": "Projects/en2karp.md",
+  "body_markdown": "## en2karp — design notes\n\nThree pipelines, one catalog. Each pipeline is independently runnable\nand has a single job.\n\n### Pipeline 01 — catalog\nEvernote → ENEX → Obsidian vault → SQLite catalog. Idempotent,\nincremental. The catalog is the single source of truth about what\nexists.\n\n### Pipeline 02 — wiki builder\nTwo passes. Haiku extracts per-note metadata; entity resolution\ndeterministically proposes articles; Sonnet synthesizes each article.\nThe tag filter controls scope.\n\n### Pipeline 03 — webapp\nStatic PWA. Reads `catalog.json` + `metadata.json` + per-note\nsidecars. Pure browser, no server. Added 2026-04-20: a selection\nbridge that hands note sets back to Pipeline 02.\n\n### Why three?\nEach pipeline has a different natural cadence. Catalog reindex is\nscheduled. Wiki builds are per-domain. Webapp rebuilds whenever the\ncatalog changes.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "en2karp",
+    "wiki",
+    "project"
+  ],
+  "modified_date": "2026-04-19"
+}

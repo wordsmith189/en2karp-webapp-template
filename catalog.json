@@ -3,156 +3,213 @@
     "note_id": "a1f2-borges",
     "title": "Borges — Ficciones",
     "folder": "Books",
-    "tags": ["literature", "borges"],
+    "tags": [
+      "literature",
+      "borges"
+    ],
     "created_date": "2025-11-03",
     "modified_date": "2026-02-14",
     "word_count": 842,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "synthesized"
+    "wiki_status": "synthesized",
+    "file_path": "Books/borges.md"
   },
   {
     "note_id": "b2e3-memcode",
     "title": "The Memory Code — rereading",
     "folder": "Books",
-    "tags": ["memory", "mnemonics"],
+    "tags": [
+      "memory",
+      "mnemonics"
+    ],
     "created_date": "2025-12-01",
     "modified_date": "2026-03-10",
     "word_count": 513,
     "source_url": null,
     "image_count": 2,
     "has_ocr": true,
-    "wiki_status": "extracted"
+    "wiki_status": "extracted",
+    "file_path": "Books/the-memory-code.md"
   },
   {
     "note_id": "c3d4-smartnotes",
     "title": "How to Take Smart Notes",
     "folder": "Books",
-    "tags": ["zettelkasten", "productivity"],
+    "tags": [
+      "zettelkasten",
+      "productivity"
+    ],
     "created_date": "2026-01-18",
     "modified_date": "2026-01-19",
     "word_count": 287,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "raw"
+    "wiki_status": "raw",
+    "file_path": "Books/how-to-take-smart-notes.md"
   },
   {
     "note_id": "d4c5-wiki-vs-zk",
     "title": "Wiki vs. Zettelkasten — tradeoffs",
     "folder": "Ideas",
-    "tags": ["wiki", "zettelkasten", "personal"],
+    "tags": [
+      "wiki",
+      "zettelkasten",
+      "personal"
+    ],
     "created_date": "2026-02-02",
     "modified_date": "2026-04-11",
     "word_count": 1340,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "synthesized"
+    "wiki_status": "synthesized",
+    "file_path": "Ideas/wiki-vs-zettelkasten.md"
   },
   {
     "note_id": "e5b6-local-llm",
     "title": "Local LLM inference for personal wikis",
     "folder": "Ideas",
-    "tags": ["llm", "local", "workflow"],
+    "tags": [
+      "llm",
+      "local",
+      "workflow"
+    ],
     "created_date": "2026-03-04",
     "modified_date": "2026-04-16",
     "word_count": 912,
     "source_url": null,
     "image_count": 1,
     "has_ocr": false,
-    "wiki_status": "extracted"
+    "wiki_status": "extracted",
+    "file_path": "Ideas/local-llm-inference-for-personal-wikis.md"
   },
   {
     "note_id": "f6a7-mobile-capture",
     "title": "Mobile capture problem (post-Evernote)",
     "folder": "Ideas",
-    "tags": ["mobile", "capture", "workflow"],
+    "tags": [
+      "mobile",
+      "capture",
+      "workflow"
+    ],
     "created_date": "2026-04-05",
     "modified_date": "2026-04-18",
     "word_count": 204,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "raw"
+    "wiki_status": "raw",
+    "file_path": "Ideas/mobile-capture-problem.md"
   },
   {
     "note_id": "g7b8-en2karp-design",
     "title": "en2karp — design notes",
     "folder": "Projects",
-    "tags": ["en2karp", "wiki", "project"],
+    "tags": [
+      "en2karp",
+      "wiki",
+      "project"
+    ],
     "created_date": "2026-02-20",
     "modified_date": "2026-04-19",
     "word_count": 1585,
     "source_url": null,
     "image_count": 3,
     "has_ocr": false,
-    "wiki_status": "synthesized"
+    "wiki_status": "synthesized",
+    "file_path": "Projects/en2karp.md"
   },
   {
     "note_id": "h8c9-monetization",
     "title": "Monetization notes for side projects",
     "folder": "Projects",
-    "tags": ["monetization", "project"],
+    "tags": [
+      "monetization",
+      "project"
+    ],
     "created_date": "2026-04-02",
     "modified_date": "2026-04-08",
     "word_count": 321,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "raw"
+    "wiki_status": "raw",
+    "file_path": "Projects/monetization-notes-for-side-projects.md"
   },
   {
     "note_id": "i9d0-macmini",
     "title": "Mac mini M4 Pro — local inference setup",
     "folder": "Projects",
-    "tags": ["hardware", "setup", "mac", "local"],
+    "tags": [
+      "hardware",
+      "setup",
+      "mac",
+      "local"
+    ],
     "created_date": "2026-03-15",
     "modified_date": "2026-04-12",
     "word_count": 687,
     "source_url": null,
     "image_count": 1,
     "has_ocr": true,
-    "wiki_status": "extracted"
+    "wiki_status": "extracted",
+    "file_path": "Projects/mac-mini-m4-pro.md"
   },
   {
     "note_id": "j0e1-karpathy-gist",
     "title": "Karpathy's LLM wiki gist",
     "folder": "Reading",
-    "tags": ["karpathy", "wiki", "llm"],
+    "tags": [
+      "karpathy",
+      "wiki",
+      "llm"
+    ],
     "created_date": "2025-10-12",
     "modified_date": "2026-03-22",
     "word_count": 498,
     "source_url": "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f",
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "synthesized"
+    "wiki_status": "synthesized",
+    "file_path": "Reading/karpathys-llm-wiki-gist.md"
   },
   {
     "note_id": "k1f2-rag-vs-wiki",
     "title": "RAG vs. wiki paradigm",
     "folder": "Reading",
-    "tags": ["rag", "wiki", "llm"],
+    "tags": [
+      "rag",
+      "wiki",
+      "llm"
+    ],
     "created_date": "2026-01-09",
     "modified_date": "2026-03-30",
     "word_count": 744,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "extracted"
+    "wiki_status": "extracted",
+    "file_path": "Reading/rag-vs-wiki-paradigm.md"
   },
   {
     "note_id": "l2g3-mnemovault",
     "title": "MnemoVault — Ollama-backed local wiki IDE",
     "folder": "Reading",
-    "tags": ["mnemovault", "local", "tool"],
+    "tags": [
+      "mnemovault",
+      "local",
+      "tool"
+    ],
     "created_date": "2026-04-14",
     "modified_date": "2026-04-15",
     "word_count": 156,
     "source_url": null,
     "image_count": 0,
     "has_ocr": false,
-    "wiki_status": "raw"
+    "wiki_status": "raw",
+    "file_path": "Reading/mnemovault.md"
   }
 ]

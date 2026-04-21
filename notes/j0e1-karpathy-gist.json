@@ -1,0 +1,14 @@
+{
+  "note_id": "j0e1-karpathy-gist",
+  "title": "Karpathy's LLM wiki gist",
+  "file_path": "Reading/karpathys-llm-wiki-gist.md",
+  "body_markdown": "## Karpathy's LLM wiki gist\n\nThe reference baseline for this whole project. Three layers:\n\n1. **Raw sources** — immutable input documents\n2. **The wiki** — LLM-owned markdown (summaries, entity pages)\n3. **The schema** — a config doc specifying structure\n\nThree operations: ingest, query, lint. Key philosophy:\n\n> *\"The wiki is a persistent, compounding artifact.\"*\n\nThe LLM does all the bookkeeping (cross-references, contradictions,\nconsistency) because humans abandon wikis when maintenance burden\noutgrows value. That observation is the whole insight.\n\nSee: [original gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)\n",
+  "images": [],
+  "source_url": "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f",
+  "tags": [
+    "karpathy",
+    "wiki",
+    "llm"
+  ],
+  "modified_date": "2026-03-22"
+}

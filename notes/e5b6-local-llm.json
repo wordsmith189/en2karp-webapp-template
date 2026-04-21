@@ -1,0 +1,14 @@
+{
+  "note_id": "e5b6-local-llm",
+  "title": "Local LLM inference for personal wikis",
+  "file_path": "Ideas/local-llm-inference-for-personal-wikis.md",
+  "body_markdown": "## Local LLM inference for personal wikis\n\nCloud inference works but has three problems for a *personal* wiki:\n\n1. Cost scales with reuse — every query re-reads context.\n2. Privacy — personal notes go out to a third party.\n3. Latency — ~500ms per call limits batch workflows.\n\n### Hardware target\nMac mini M4 Pro, 64 GB unified RAM, 2 TB. 64 GB is the key spec —\nenough for 70B-class models at Q4+ fully in RAM.\n\n### Software target\nOllama or llama.cpp as the backend; whatever lets me swap models\nwithout rewriting the wiki builder. Haiku-class extraction happens\nlocally; Sonnet-class synthesis still dispatches to Claude for now.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "llm",
+    "local",
+    "workflow"
+  ],
+  "modified_date": "2026-04-16"
+}

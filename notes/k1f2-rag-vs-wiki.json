@@ -1,0 +1,14 @@
+{
+  "note_id": "k1f2-rag-vs-wiki",
+  "title": "RAG vs. wiki paradigm",
+  "file_path": "Reading/rag-vs-wiki-paradigm.md",
+  "body_markdown": "## RAG vs. wiki paradigm\n\nBoth retrieve context for an LLM. They differ on *where the work\nhappens*.\n\n### RAG\nQuery time: embed the question, fetch the top-k chunks, stuff them\ninto the prompt. The corpus stays raw. Good for questions you haven't\nanticipated; bad for synthesis that needs the full graph.\n\n### Wiki\nIngestion time: the LLM reads documents and writes a structured wiki.\nQuery time just reads the wiki. Good for recurring questions and\nfor a *single person* who benefits from the compounding artifact.\n\n### The middle path\nA wiki that still has the raw sources linked. Queries prefer the\nwiki first, fall through to the raw layer when specificity is\nneeded. That's the shape en2karp is taking.\n",
+  "images": [],
+  "source_url": null,
+  "tags": [
+    "rag",
+    "wiki",
+    "llm"
+  ],
+  "modified_date": "2026-03-30"
+}
