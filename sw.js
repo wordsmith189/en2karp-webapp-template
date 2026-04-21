@@ -3,12 +3,13 @@
 //   - Catalog data (catalog.json, metadata.json): network-first, cache fallback.
 //   - Per-note sidecars + image assets: stale-while-revalidate on first fetch.
 // Bump CACHE_VERSION whenever the shell changes.
-const CACHE_VERSION = "en2karp-v9";
+const CACHE_VERSION = "en2karp-v10";
 const SHELL = [
     "./",
     "./index.html",
     "./manifest.json",
     "./logo.png",
+    "./favicon-32.png",
     "./vendor/marked.min.js",
 ];
 
